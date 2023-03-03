@@ -7,15 +7,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-
 func getEmptyTestInputs() *TfSplitPoliciesDataSourceModel {
-	return &TfSplitPoliciesDataSourceModel {
-		Policies: []types.String {},
+	return &TfSplitPoliciesDataSourceModel{
+		Policies: []types.String{},
 	}
 }
 func getTestInputs() *TfSplitPoliciesDataSourceModel {
-	return &TfSplitPoliciesDataSourceModel {
-		Policies: []types.String {
+	return &TfSplitPoliciesDataSourceModel{
+		Policies: []types.String{
 			types.StringValue("foo"),
 			types.StringValue("bar"),
 			types.StringValue("baz"),

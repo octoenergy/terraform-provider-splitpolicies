@@ -1,17 +1,73 @@
 package provider
 
 import (
-	"testing"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"regexp"
+	"testing"
 )
 
 func TestDataSourceEmpty(t *testing.T) {
 	resource.UnitTest(t, resource.TestCase{
-		ProtoV6ProviderFactories: testProviderFactories,
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config: `data "tf_split_policies" "test" {}`,
+				Config:      `data "tf-split-policies" "test" {}`,
+				ExpectError: regexp.MustCompile("The argument \"policies\" is required, but no definition was found."),
 			},
 		},
 	})
 }
+
+func TestSmallDataSourceOneChunk(t *testing.T) {
+	resource.UnitTest(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			// Read testing
+			{
+				Config: testSmallDataSourceOneChunkConfig,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.%", "1"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.0.#", "3"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.0.0", "one"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.0.1", "two"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.0.2", "three"),
+				),
+			},
+		},
+	})
+}
+
+const testSmallDataSourceOneChunkConfig = `
+data "tf-split-policies" "test" {
+  policies = ["one", "two", "three"]
+}
+`
+
+func TestSmallDataSourceManyChunks(t *testing.T) {
+	resource.UnitTest(t, resource.TestCase{
+		PreCheck:                 func() { testAccPreCheck(t) },
+		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
+		Steps: []resource.TestStep{
+			// Read testing
+			{
+				Config: testSmallDataSourceManyChunksConfig,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.%", "2"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.0.#", "2"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.1.#", "1"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.0.0", "one"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.0.1", "two"),
+					resource.TestCheckResourceAttr("data.tf-split-policies.test", "chunks.1.0", "three"),
+				),
+			},
+		},
+	})
+}
+
+const testSmallDataSourceManyChunksConfig = `
+data "tf-split-policies" "test" {
+  policies = ["one", "two", "three"]
+  maximum_chunk_size = 6
+}
+`
