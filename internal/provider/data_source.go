@@ -3,8 +3,6 @@ package provider
 import (
 	"context"
 	"fmt"
-	"net/http"
-
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -23,7 +21,6 @@ func NewTfSplitPoliciesDataSource() datasource.DataSource {
 
 // TfSplitPoliciesDataSource defines the data source implementation.
 type TfSplitPoliciesDataSource struct {
-	client *http.Client
 }
 
 // TfSplitPoliciesDataSourceModel describes the data source data model.
@@ -68,23 +65,6 @@ func (d *TfSplitPoliciesDataSource) Schema(ctx context.Context, req datasource.S
 }
 
 func (d *TfSplitPoliciesDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
-	// Prevent panic if the provider has not been configured.
-	if req.ProviderData == nil {
-		return
-	}
-
-	client, ok := req.ProviderData.(*http.Client)
-
-	if !ok {
-		resp.Diagnostics.AddError(
-			"Unexpected Data Source Configure Type",
-			fmt.Sprintf("Expected *http.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
-		)
-
-		return
-	}
-
-	d.client = client
 }
 
 func (d *TfSplitPoliciesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
