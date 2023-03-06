@@ -7,6 +7,7 @@
         go
         gopls
         terraform
+        golangci-lint
       ];
     };
 
