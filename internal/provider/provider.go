@@ -2,8 +2,6 @@ package provider
 
 import (
 	"context"
-	"net/http"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -40,14 +38,6 @@ func (p *TfSplitPoliciesProvider) Configure(ctx context.Context, req provider.Co
 	if resp.Diagnostics.HasError() {
 		return
 	}
-
-	// Configuration values are now available.
-	// if data.Endpoint.IsNull() { /* ... */ }
-
-	// Example client configuration for data sources and resources
-	client := http.DefaultClient
-	resp.DataSourceData = client
-	resp.ResourceData = client
 }
 
 func (p *TfSplitPoliciesProvider) Resources(ctx context.Context) []func() resource.Resource {
