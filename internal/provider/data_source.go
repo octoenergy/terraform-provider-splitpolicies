@@ -15,6 +15,7 @@ import (
 // Ensure provider defined types fully satisfy framework interfaces.
 var _ datasource.DataSource = &TfSplitPoliciesDataSource{}
 
+// NewTfSplitPoliciesDataSource creates a new tf-split-policies data source
 func NewTfSplitPoliciesDataSource() datasource.DataSource {
 	return &TfSplitPoliciesDataSource{}
 }
@@ -25,20 +26,28 @@ type TfSplitPoliciesDataSource struct {
 
 // TfSplitPoliciesDataSourceModel describes the data source data model.
 type TfSplitPoliciesDataSourceModel struct {
-	Id               types.String   `tfsdk:"id"`
+	ID               types.String   `tfsdk:"id"`
 	MaximumChunkSize types.Int64    `tfsdk:"maximum_chunk_size"`
 	Hash             types.String   `tfsdk:"hash"`
 	Policies         []types.String `tfsdk:"policies"`
 	Chunks           types.Map      `tfsdk:"chunks"`
 }
 
-func (d *TfSplitPoliciesDataSource) Metadata(ctx context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
+// Metadata provides the name of the data source
+func (*TfSplitPoliciesDataSource) Metadata(
+	_ context.Context,
+	req datasource.MetadataRequest,
+	resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName
 }
 
 var chunksType = basetypes.ListType{ElemType: basetypes.StringType{}}
 
-func (d *TfSplitPoliciesDataSource) Schema(ctx context.Context, req datasource.SchemaRequest, resp *datasource.SchemaResponse) {
+// Schema returns the schema for this data source
+func (*TfSplitPoliciesDataSource) Schema(
+	_ context.Context,
+	_ datasource.SchemaRequest,
+	resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Splitting multiple JSON AWS policies into chunks of a given maximum size",
 		Attributes: map[string]schema.Attribute{
@@ -64,10 +73,18 @@ func (d *TfSplitPoliciesDataSource) Schema(ctx context.Context, req datasource.S
 	}
 }
 
-func (d *TfSplitPoliciesDataSource) Configure(ctx context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
+// Configure configures the data source
+func (*TfSplitPoliciesDataSource) Configure(
+	_ context.Context,
+	_ datasource.ConfigureRequest,
+	_ *datasource.ConfigureResponse) {
 }
 
-func (d *TfSplitPoliciesDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
+// Read is called when the provider reads from the data source
+func (*TfSplitPoliciesDataSource) Read(
+	ctx context.Context,
+	req datasource.ReadRequest,
+	resp *datasource.ReadResponse) {
 	var data TfSplitPoliciesDataSourceModel
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
 
@@ -75,7 +92,12 @@ func (d *TfSplitPoliciesDataSource) Read(ctx context.Context, req datasource.Rea
 		return
 	}
 
-	var hash = hashInputs(&data)
+	var hash, err = hashInputs(&data)
+	if err != nil {
+		newDiagnostic := diag.NewErrorDiagnostic("Failed to chunk policies", err.Error())
+		resp.Diagnostics.Append(newDiagnostic)
+		return
+	}
 	data.Hash = types.StringValue(hash)
 	tflog.Trace(ctx, "set the hash value of the input policies")
 
@@ -91,7 +113,7 @@ func (d *TfSplitPoliciesDataSource) Read(ctx context.Context, req datasource.Rea
 		maximumSize = int(data.MaximumChunkSize.ValueInt64())
 	}
 
-	// Split the policies into chunks of at most 6144 characters
+	// Split the policies into chunks of at most maximumSize characters
 	chunks, err := splitPolicies(policies, maximumSize)
 	if err != nil {
 		newDiagnostic := diag.NewErrorDiagnostic("Failed to chunk policies", err.Error())
@@ -121,7 +143,7 @@ func (d *TfSplitPoliciesDataSource) Read(ctx context.Context, req datasource.Rea
 	}
 
 	data.Chunks = mv
-	data.Id = types.StringValue("some-id")
+	data.ID = types.StringValue("some-id")
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }

@@ -22,15 +22,27 @@ type TfSplitPoliciesProvider struct {
 type TfSplitPoliciesProviderModel struct {
 }
 
-func (p *TfSplitPoliciesProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
+// Metadata returns the metadata for the provider
+func (p *TfSplitPoliciesProvider) Metadata(
+	_ context.Context,
+	_ provider.MetadataRequest,
+	resp *provider.MetadataResponse) {
 	resp.TypeName = "tf-split-policies"
 	resp.Version = p.version
 }
 
-func (p *TfSplitPoliciesProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
+// Schema returns the schema for the provider
+func (*TfSplitPoliciesProvider) Schema(
+	_ context.Context,
+	_ provider.SchemaRequest,
+	_ *provider.SchemaResponse) {
 }
 
-func (p *TfSplitPoliciesProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
+// Configure configures the provider
+func (*TfSplitPoliciesProvider) Configure(
+	ctx context.Context,
+	req provider.ConfigureRequest,
+	resp *provider.ConfigureResponse) {
 	var data TfSplitPoliciesProviderModel
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
@@ -40,16 +52,19 @@ func (p *TfSplitPoliciesProvider) Configure(ctx context.Context, req provider.Co
 	}
 }
 
-func (p *TfSplitPoliciesProvider) Resources(ctx context.Context) []func() resource.Resource {
+// Resources returns a slice of functions to instantiate each Resource implementation.
+func (*TfSplitPoliciesProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{}
 }
 
-func (p *TfSplitPoliciesProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
+// DataSources returns a slice of functions to instantiate each DataSource implementation.
+func (*TfSplitPoliciesProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewTfSplitPoliciesDataSource,
 	}
 }
 
+// New creates a new tf-split-policies provider
 func New(version string) func() provider.Provider {
 	return func() provider.Provider {
 		return &TfSplitPoliciesProvider{
