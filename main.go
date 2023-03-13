@@ -4,7 +4,7 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/octoenergy/tf-split-policies/internal/provider"
+	"github.com/octoenergy/terraform-provider-splitpolicies/internal/provider"
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
@@ -36,7 +36,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/hashicorp/tf-split-policies",
+		Address: "registry.terraform.io/hashicorp/splitpolicies",
 		Debug:   debug,
 	}
 

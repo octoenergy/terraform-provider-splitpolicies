@@ -26,7 +26,7 @@ func getTestInputs() *TfSplitPoliciesDataSourceModel {
 func TestHashInputs(t *testing.T) {
 	var value, err = hashInputs(getTestInputs())
 	assert.NoError(t, err)
-	if diff := cmp.Diff("89160751b83d1e981c46598c914b50c870d141f3", value); diff != "" {
+	if diff := cmp.Diff("db41eaa716394bd139c3b009ce47a6be593d2c40", value); diff != "" {
 		t.Errorf("Got invalid hash:\n%s", diff)
 	}
 }
@@ -34,7 +34,7 @@ func TestHashInputs(t *testing.T) {
 func TestEmptyHashInputs(t *testing.T) {
 	var value, err = hashInputs(getEmptyTestInputs())
 	assert.NoError(t, err)
-	if diff := cmp.Diff("e7607a63a2af79a17a07d6aec52471436b72a363", value); diff != "" {
+	if diff := cmp.Diff("f3d7f7ba5e397bbe8ea00a989a1a746d5dfe7f91", value); diff != "" {
 		t.Errorf("Got invalid hash:\n%s", diff)
 	}
 }
