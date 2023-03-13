@@ -11,7 +11,7 @@ func TestDataSourceEmpty(t *testing.T) {
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			{
-				Config:      `data "split-policies" "test" {}`,
+				Config:      `data "splitpolicies" "test" {}`,
 				ExpectError: regexp.MustCompile("The argument \"policies\" is required, but no definition was found."),
 			},
 		},
@@ -27,11 +27,11 @@ func TestSmallDataSourceOneChunk(t *testing.T) {
 			{
 				Config: testSmallDataSourceOneChunkConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.%", "1"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.0.#", "3"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.0.0", "one"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.0.1", "two"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.0.2", "three"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.%", "1"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.0.#", "3"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.0.0", "one"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.0.1", "two"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.0.2", "three"),
 				),
 			},
 		},
@@ -39,7 +39,7 @@ func TestSmallDataSourceOneChunk(t *testing.T) {
 }
 
 const testSmallDataSourceOneChunkConfig = `
-data "split-policies" "test" {
+data "splitpolicies" "test" {
   policies = ["one", "two", "three"]
 }
 `
@@ -53,12 +53,12 @@ func TestSmallDataSourceManyChunks(t *testing.T) {
 			{
 				Config: testSmallDataSourceManyChunksConfig,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.%", "2"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.0.#", "2"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.1.#", "1"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.0.0", "one"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.0.1", "two"),
-					resource.TestCheckResourceAttr("data.split-policies.test", "chunks.1.0", "three"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.%", "2"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.0.#", "2"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.1.#", "1"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.0.0", "one"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.0.1", "two"),
+					resource.TestCheckResourceAttr("data.splitpolicies.test", "chunks.1.0", "three"),
 				),
 			},
 		},
@@ -66,7 +66,7 @@ func TestSmallDataSourceManyChunks(t *testing.T) {
 }
 
 const testSmallDataSourceManyChunksConfig = `
-data "split-policies" "test" {
+data "splitpolicies" "test" {
   policies = ["one", "two", "three"]
   maximum_chunk_size = 6
 }

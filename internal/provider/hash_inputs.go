@@ -15,7 +15,7 @@ func hashInputs(data *TfSplitPoliciesDataSourceModel) (string, error) {
 	var hasher = sha1.New()
 	var err error
 
-	if _, err = hasher.Write([]byte("split-policies")); err != nil {
+	if _, err = hasher.Write([]byte("splitpolicies")); err != nil {
 		return "", err
 	}
 

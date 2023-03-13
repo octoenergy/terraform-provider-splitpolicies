@@ -27,7 +27,7 @@ func (p *TfSplitPoliciesProvider) Metadata(
 	_ context.Context,
 	_ provider.MetadataRequest,
 	resp *provider.MetadataResponse) {
-	resp.TypeName = "split-policies"
+	resp.TypeName = "splitpolicies"
 	resp.Version = p.version
 }
 
@@ -64,7 +64,7 @@ func (*TfSplitPoliciesProvider) DataSources(_ context.Context) []func() datasour
 	}
 }
 
-// New creates a new tf-split-policies provider
+// New creates a new tf-splitpolicies provider
 func New(version string) func() provider.Provider {
 	return func() provider.Provider {
 		return &TfSplitPoliciesProvider{

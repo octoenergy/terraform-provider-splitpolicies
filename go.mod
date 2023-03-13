@@ -1,4 +1,4 @@
-module github.com/octoenergy/tf-split-policies
+module github.com/octoenergy/terraform-provider-splitpolicies
 
 go 1.19
 

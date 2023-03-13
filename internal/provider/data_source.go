@@ -15,7 +15,7 @@ import (
 // Ensure provider defined types fully satisfy framework interfaces.
 var _ datasource.DataSource = &TfSplitPoliciesDataSource{}
 
-// NewTfSplitPoliciesDataSource creates a new tf-split-policies data source
+// NewTfSplitPoliciesDataSource creates a new tf-splitpolicies data source
 func NewTfSplitPoliciesDataSource() datasource.DataSource {
 	return &TfSplitPoliciesDataSource{}
 }
