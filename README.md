@@ -7,13 +7,18 @@ documents that don't overflow then AWS-imposed limit of 6144 bytes. The chunk si
 ## Usage
 
 ```hcl
-data "split-policies" "test" {
+data "splitpolicies" "test" {
   policies = ["one", "two", "three"]
   maximum_chunk_size = 6
 }
 
+data "aws_iam_policy_document" "policy_docs" {
+  for_each                = data.splitpolicies.test.chunks
+  source_policy_documents = each.value
+}
+
 resource "aws_iam_policy" "policies" {
-    for_each = data.tf-split-policies.test.chunks
+    for_each = data.aws_iam_policy_document.policy_docs
     policy   = each.value.json
 }
 ```
