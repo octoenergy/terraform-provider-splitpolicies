@@ -51,16 +51,12 @@ func (*TfSplitPoliciesDataSource) Schema(
 	resp.Schema = schema.Schema{
 		MarkdownDescription: "Splitting multiple JSON AWS policies into chunks of a given maximum size",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.StringAttribute{
-				Computed: true,
-			},
+			"id": schema.StringAttribute{},
 			"hash": schema.StringAttribute{
 				MarkdownDescription: "The hash of all the inputs, usefull for update triggering",
-				Computed:            true,
 			},
 			"chunks": schema.MapAttribute{
 				ElementType: chunksType,
-				Computed:    true,
 			},
 			"policies": schema.ListAttribute{
 				ElementType: types.StringType,
